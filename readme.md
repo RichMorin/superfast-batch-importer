@@ -13,23 +13,21 @@ To simply use it (no source/git/maven required):
 * [download zip](http://dist.neo4j.org/batch-import/batch_importer_21.zip)
 * unzip
 
-*NOTE: You have to provide at least one **tab separated** CSV file for nodes and at least one for relationships.*
+*NOTE: You have to provide at least one _tab separated_ CSV file for nodes and at least one for relationships.*
 
 ## Execution
 
 Just use the provided shell script `import.sh` or `import.bat` on Windows
 
-    import.sh -db-directory test.db -nodes nodes.csv -rels rels.csv
+    import.sh -db-directory graph.db -nodes nodes.csv -rels rels.csv
 
 Example data for the files is provided in the `sample` directory. Test the importer using:
 
-    import.sh -db-directory test.db -nodes sample/nodes.csv -rels sample/rels.csv
+    import.sh -db-directory graph.db -nodes sample/nodes.csv -rels sample/rels.csv
 
 ## Use with Neo4j Server
 
-* point to the sever db: `import.sh -db-directory /path/to/neo4j/data/graph.db -nodes nodes.csv -rels rels.csv`
-* or, after the import point your server config (`/path/to/neo4j/conf/neo4j-server.properties`) to the path of this `test.db` directory
-* or copy or move the created data over to your server e.g. `cp -r test.db/* /path/to/neo4j/data/graph.db/`
+* after the import point your server config (`/path/to/neo4j/conf/neo4j-server.properties`) to the path of this `graph.db` directory
 
 ## CSV file format
 
@@ -62,7 +60,7 @@ Usage: TestDataGenerator nodes=1000000 relsPerNode=50 relTypes=KNOWS,FOLLOWS pro
 0 nodes in 0secs with [0] long property strings
 Creating 1000000 Nodes and 5501648 Relationships with [6501648:0] took 8 seconds.
 
-$ ./import.sh -db-directory test.db -nodes nodes.csv -rels rels.csv
+$ ./import.sh -db-directory graph.db -nodes nodes.csv -rels rels.csv
 
 Neo4j Data Importer
 Importer -db-directory <graph.db> -nodes <nodes.csv> -rels <rels.csv> -debug <debug config>
@@ -80,7 +78,7 @@ Total import time: 38 seconds
 Total time taken: 39472 ms
 ````
 
-There is also a `sample` directory, please run from the main directory `./import.sh -db-directory test.db -nodes sample/nodes.csv -rels sample/rels.csv`
+There is also a `sample` directory, please run from the main directory `./import.sh -db-directory graph.db -nodes sample/nodes.csv -rels sample/rels.csv`
 
 ````
 head sample/nodes.csv
@@ -112,7 +110,7 @@ Start	End	Type	Property	Counter:long
 
 ## Parameters
 
-* -db-directory test.db - the graph database directory, a new db will be created in the directory except when `batch_import.keep_db=true` is set in `batch.properties`.
+* -db-directory graph.db - the graph database directory, a new db will be created in the directory except when `batch_import.keep_db=true` is set in `batch.properties`.
 
 * -nodes nodes.csv - a comma separated list of *node-csv-files*
 
@@ -198,11 +196,11 @@ batch_import.keep_db=true
 
 If you want to work on the code and run the importer after making changes:
 
-    mvn clean compile exec:java -Dexec.mainClass="org.neo4j.batchimport.Importer" -Dexec.args="-db-directory test.db -nodes nodes.csv -rels rels.csv"
+    mvn clean compile exec:java -Dexec.mainClass="org.neo4j.batchimport.Importer" -Dexec.args="-db-directory graph.db -nodes nodes.csv -rels rels.csv"
     
     or
     
-    java -server -Dfile.encoding=UTF-8 -Xmx4G -jar target/batch-import-jar-with-dependencies.jar -db-directory test.db -nodes nodes.csv -rels rels.csv
+    java -server -Dfile.encoding=UTF-8 -Xmx4G -jar target/batch-import-jar-with-dependencies.jar -db-directory graph.db -nodes nodes.csv -rels rels.csv
 
 
     $ rm -rf target/db
@@ -217,7 +215,7 @@ If you want to work on the code and run the importer after making changes:
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESSFUL
     [INFO] ------------------------------------------------------------------------
-    $ java -server -Xmx4G -jar target/batch-import-jar-with-dependencies.jar -db-directory test.db -nodes nodes.csv -rels rels.csv
+    $ java -server -Xmx4G -jar target/batch-import-jar-with-dependencies.jar -db-directory graph.db -nodes nodes.csv -rels rels.csv
     Physical mem: 16384MB, Heap size: 3640MB
 
 ## Utilities
@@ -306,7 +304,7 @@ rel_index worked exact rels_index.csv
 Example command line:
 
 ````
-./import.sh -db-directory test.db -nodes nodes.csv -rels rels.csv
+./import.sh -db-directory graph.db -nodes nodes.csv -rels rels.csv
 ````
 
 ### Using Neo4j's Automatic Indexing
@@ -343,3 +341,10 @@ id	property1	property2
 1	qthnrret	tzjmmhta
 2	dtztaqpy	pbmcdqyc
 ````
+
+### Other ways to use it with Neo4j Server
+
+**know what you're doing**
+
+* point the import to the sever db: `import.sh -db-directory /path/to/neo4j/data/graph.db -nodes nodes.csv -rels rels.csv`
+* copy or move the created data over to your server e.g. `cp -r graph.db/* /path/to/neo4j/data/graph.db/`
