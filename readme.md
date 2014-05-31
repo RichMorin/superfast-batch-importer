@@ -1,6 +1,6 @@
 # Neo4j (CSV) Batch Importer
 
-This software is licensed under the [GPLv3](http://www.gnu.org/licenses/gpl-3.0.en.html) for now. 
+This software is licensed under the [GPLv3](http://www.gnu.org/licenses/gpl-3.0.en.html), for now. 
 You can ask [Neo Technology](http://neotechnology.com) about a different licensing agreement.
 
 __Works with Neo4j 2.1.1__
@@ -9,7 +9,7 @@ __Works with Neo4j 2.1.1__
 
 ## Binary Download
 
-To simply use it (no source/git/maven required):
+To simply use the importer (no source/git/maven required):
 * [download zip](http://dist.neo4j.org/batch-import/batch_importer_21.zip)
 * unzip
 
@@ -17,7 +17,7 @@ To simply use it (no source/git/maven required):
 
 ## Execution
 
-Just use the provided shell script `import.sh` or `import.bat` on Windows
+Just use the provided shell script `import.sh` (or `import.bat` on Windows):
 
     import.sh -db-directory graph.db -nodes nodes.csv -rels rels.csv
 
@@ -27,29 +27,36 @@ Example data for the files is provided in the `sample` directory. Test the impor
 
 ## Use with Neo4j Server
 
-* after the import point your server config (`/path/to/neo4j/conf/neo4j-server.properties`) to the path of this `graph.db` directory
+* After the import finishes, point your server config (`/path/to/neo4j/conf/neo4j-server.properties`) to the path of this `graph.db` directory
 
 ## CSV file format
 
-* **tab separated** csv files
-* for non-ascii characters make sure to add `-Dfile.encoding=UTF-8` to the commandline arguments
-* csv files can be zipped individually as *.gz or *.zip
-* multiple files for nodes and rels, comma separated, without spaces like "node1.csv,node2.csv"
-* If only one node file is initially imported, the file-line number corresponds to the node-id (*starting with 0*)
+* **tab separated** CSV files
+* For non-ASCII characters, make sure to add `-Dfile.encoding=UTF-8` to the commandline arguments.
+* CSV files can be zipped individually as *.gz or *.zip
+* Multiple files can be used for nodes and rels. Use a comma-separated list,
+  without spaces (eg,  "node1.csv,node2.csv").
+* If only one node file is initially imported,
+  the file-line number corresponds to the node-id (*starting with 0*).
 
 ### Header Format
 
-* Property names in first row.
-* Property values not listed will not be set on the nodes or relationships.
-* Optionally property fields can have a type (defaults to String) indicated with `name:type` where type is one of
-  (int, long, float, double, boolean, byte, short, char, string). The string value is then converted to that type.
-  Conversion failure will result in abort of the import operation.
-* There is a separate "label" type, which should be used for relationship types and/or node labels, (`labels:label`)
-* Property fields may also be arrays by adding "_array" to the types above and separating the data with commas.
-* you can specify concrete, externally provided node-id's with: `i:id`, both in the node and relationship-files
-* Optionally automatic indexing of properties can be configured with a header like `name:string:users` and a configured index in `batch.properties` like `batch_import.node_index=exact`
-  then the property `name` will be indexed in the `users` index for each row with a value there
-
+* Property names are defined in the first row.
+* Empty property values will not be set on the nodes or relationships.
+* Optionally, property fields can have a type (defaults to String).
+  This is indicated with `name:type`,
+  where type is one of (int, long, float, double, boolean, byte, short, char, string).
+  The string value is then converted to that type.
+  Conversion failure will result in an abort of the import operation.
+* There is a separate "label" type, which should be used for relationship types and/or node labels
+  (eg, `labels:label`).
+* Property fields may also be defined as arrays.
+  Add "_array" to the types above and separate the sub-fields with commas.
+* You can specify concrete, externally provided node-id's with `i:id`,
+  both in the node and relationship files.
+* Optionally, automatic indexing of properties can be configured with a header like `name:string:users`;
+  add a configured index in `batch.properties` (eg, `batch_import.node_index.users=exact`).
+  The property `name` will be indexed in the `users` index for each row which has this value.
 
 ## Examples
 
@@ -78,7 +85,9 @@ Total import time: 38 seconds
 Total time taken: 39472 ms
 ````
 
-There is also a `sample` directory, please run from the main directory `./import.sh -db-directory graph.db -nodes sample/nodes.csv -rels sample/rels.csv`
+There is also a `sample` directory.
+Please run this from the main directory
+`./import.sh -db-directory graph.db -nodes sample/nodes.csv -rels sample/rels.csv`
 
 ````
 head sample/nodes.csv
@@ -110,20 +119,22 @@ Start	End	Type	Property	Counter:long
 
 ## Parameters
 
-* -db-directory graph.db - the graph database directory, a new db will be created in the directory except when `batch_import.keep_db=true` is set in `batch.properties`.
+* -db-directory graph.db - the graph database directory,
+  a new database will be created in the directory,
+  except when `batch_import.keep_db=true` is set in `batch.properties`.
 
-* -nodes nodes.csv - a comma separated list of *node-csv-files*
+* -nodes nodes.csv - a comma-separated list of *node-csv-files*
 
-* -rels rels.csv - a comma separated list of *relationship-csv-files*
+* -rels rels.csv - a comma-separated list of *relationship-csv-files*
 
 #### Optional
 
 * -config batch.properties - config file for setup
-* -max-cpu 4 - number of CPU's to use
+* -max-cpu 4 - number of CPUs to use
 * -check - consistency check the generated store after import (takes a while)
 * -debug - debug mode
 
-It is also possible to specify those two file-lists in the config:
+It is also possible to specify the input file-lists in the config:
 
 ````
 batch_import.nodes_files=nodes1.csv[,nodes2.csv]
@@ -132,23 +143,30 @@ batch_import.rels_files=rels1.csv[,rels2.csv]
 
 ## Schema indexes
 
-Currently schema indexes are not created by the batch-inserter, you could create them upfront and use `batch_import.keep_db=true` to work with the existing database.
+Currently, schema indexes are not created by the batch-inserter.
+However, you can create them ahead of time
+and use `batch_import.keep_db=true` to work with the existing database.
 
-You have the option of specifying labels for your nodes using a column header like `type:label` and a comma separated list of label values.
+You have the option of specifying labels for your nodes,
+using a column header such as `type:label` and a comma-separated list of label values.
 
-On shutdown of the import Neo4j will populate the schema indexes with nodes with the appropriate labels and properties automatically.
-(The index creation is As a rough estimate the index creation will
+On shutdown of the import, Neo4j will automatically populate the schema indexes,
+using nodes with the appropriate labels and properties.
 
 ## Configuration
 
-The Importer uses a supplied `batch.properties` file to be configured:
+The Importer uses a supplied `batch.properties` file to be configured: ???
 
 #### Memory Mapping I/O Config
 
-Most important is the memory config, you should try to have enough RAM map as much of your store-files to memory as possible.
+The memory config is the most important.
+You should try to have enough RAM to map as much of your store-files to memory as possible.
 
-At least the node-store and large parts of the relationship-store should be mapped. The property- and string-stores are mostly
-append only so don't need that much RAM. Below is an example for about 6GB RAM, to leave room for the heap and also OS and OS caches.
+At least the node-store and large parts of the relationship-store should be mapped.
+The property- and string-stores are mostly append only,
+so they don't need much RAM.
+Below is an example for about 6GB RAM,
+leaving room for the heap and also for the OS and OS caches.
 
 ````
 cache_type=none
@@ -176,7 +194,7 @@ batch_import.relationship_index.friends=exact
 #### CSV (experimental)
 
 ````
-batch_import.csv.quotes=true // default, set to false for faster, experimental csv-reader
+batch_import.csv.quotes=true // default, set this to false to use a faster, experimental csv-reader
 batch_import.csv.delim=,
 ````
 
@@ -227,21 +245,21 @@ If you want to work on the code and run the importer after making changes:
 
      <> means user input
 
-Note that all these parameters can in any order and is not case sensitive.
+Note that these parameters are not case sensitive and can be specified in any order.
 
-* dir 		- location where nodes.csv and rels.csv is generated
+* dir 	    	- location where nodes.csv and rels.csv is generated
 * nodes 		- number of nodes
-* relsPerNode - number of relationships per node
-* relTypes	- number of relationship types
-* maxLabels	- maximum number of labels
+* relsPerNode   - number of relationships per node
+* relTypes	    - number of relationship types
+* maxLabels	    - maximum number of labels
 * sorted		- sorted or unsorted data (default is unsorted)
 * columns		- a tab separated column names
-* propsPerNode- properties per node
+* propsPerNode  - properties per node
 * propsPerRel	- properties per relationship
 * maxPropSize	- x:y, x is maximum size in bytes, y is percentage of properties > x in size
 * startNodeId	- the lowest node id. Useful in creating multiple node and relationship files.
 
-for instance:
+For instance:
 
     ./generate.sh dir=d:\data nodes=1000000000 relsPerNode=8 relTypes=20 maxlabels=10000 propsPerNode=3 propsPerRel=2 maxPropSize=32:5
 
@@ -253,7 +271,8 @@ for instance:
 
 ### Indexing of inserted properties
 
-You can automatically index properties of nodes and relationships by adding ":indexName" to the property-column-header.
+You can automatically index properties of nodes and relationships
+by adding ":indexName" to the property-column-header.
 Just configure the indexes in `batch.properties` like so:
 
 ````
@@ -268,11 +287,13 @@ Rana    6
 Selma   4
 ````
 
-**If you use `node_auto_index` as the index name, you can also initially populate Neo4j's automatic node index which is then
-later used and and updated while working with the database.**
+**If you use `node_auto_index` as the index name,
+you can also initially populate Neo4j's automatic node index
+which is then later used and updated while working with the database.**
 
 
-In the relationships-file you can optionally specify that the start and end-node should be looked up from the index in the same way
+In the relationships-file, you can optionally specify that the start and end-node
+should be looked up from the index in the same way.
 
 ````
 name:string:users	name:string:users	type	    since   counter:int
@@ -285,17 +306,17 @@ Selina     Rana   SISTER_OF 2007-09-15  7
 
 ### Explicit Indexing
 
-Optionally you can add nodes and relationships to indexes.
+Optionally, you can add nodes and relationships to indexes.
 
-Add four arguments per each index to command line:
+Add four arguments per each index to the command line:
 
-To create a full text node index called users using nodes_index.csv:
+To create a full-text node index called `users`, using nodes_index.csv:
 
 ````
 node_index users fulltext nodes_index.csv
 ````
 
-To create an exact relationship index called worked using rels_index.csv:
+To create an exact relationship index called `worked`, using rels_index.csv:
 
 ````
 rel_index worked exact rels_index.csv
@@ -309,16 +330,19 @@ Example command line:
 
 ### Using Neo4j's Automatic Indexing
 
-The auto-indexing elsewhere in this file pertains to the *batch inserter's* ability to automatically index. If you want to
-use this cool feature from the batch inserter, there's a little gotcha. You still need to enable the batch inserter's feature
-with `batch_import.node_index` but then instead of specifying the name of a regular index, specify the auto index's name like so:
+The auto-indexing described elsewhere in this file pertains
+to the *batch inserter's* ability to automatically index.
+If you want to use this cool feature from the batch inserter, there's a little gotcha.
+You still need to enable the batch inserter's feature with `batch_import.node_index`.
+However, instead of specifying the name of a regular index, specify the auto index's name like so:
 
 ````
 batch_import.node_index.node_auto_index=exact
 ````
 
-And you have to make sure to also enable automatic indexing in your regular Neo4j database's (`conf/neo4j.properties`) and
-specify the correct node properties to be indexed.
+You also have to make sure to enable automatic indexing
+in your regular Neo4j database's (`conf/neo4j.properties`)
+and specify the correct node properties to be indexed.
 
 ## Examples
 
@@ -346,5 +370,7 @@ id	property1	property2
 
 **know what you're doing**
 
-* point the import to the sever db: `import.sh -db-directory /path/to/neo4j/data/graph.db -nodes nodes.csv -rels rels.csv`
-* copy or move the created data over to your server e.g. `cp -r graph.db/* /path/to/neo4j/data/graph.db/`
+* Point the import to the server db:
+  `import.sh -db-directory /path/to/neo4j/data/graph.db -nodes nodes.csv -rels rels.csv`
+* Copy or move the created data over to your server, e.g.:
+  `cp -r graph.db/* /path/to/neo4j/data/graph.db/`
